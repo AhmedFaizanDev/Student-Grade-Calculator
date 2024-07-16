@@ -2,6 +2,7 @@
 #include <vector>
 #include <limits>
 #include <algorithm>
+#include <unordered_map>
 
 using namespace std;
 
@@ -79,6 +80,25 @@ void sortGrades(vector<int>& grades) {
     cout << "\n";
 }
 
+// Function to calculate mode
+void calculateMode(const vector<int>& grades) {
+    unordered_map<int, int> frequency;
+    for (int grade : grades) {
+        frequency[grade]++;
+    }
+
+    int mode = -1;
+    int maxFreq = 0;
+    for (auto& entry : frequency) {
+        if (entry.second > maxFreq) {
+            maxFreq = entry.second;
+            mode = entry.first;
+        }
+    }
+
+    cout << "Mode grade: " << mode << " (appears " << maxFreq << " times)\n";
+}
+
 int main() {
     vector<int> grades;
 
@@ -86,6 +106,7 @@ int main() {
     calculateStatistics(grades);
     calculateMedian(grades);
     sortGrades(grades);
+    calculateMode(grades);
 
     return 0;
 }
