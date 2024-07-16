@@ -1,0 +1,13 @@
+Student Grade Statistics:
+Average grade: 80.5
+Highest grade: 95
+Lowest grade: 60
+Median grade: 82.5
+Mode grade: 85 (appears 3 times)
+
+Grade Distribution:
+0-59: 1
+60-69: 1
+70-79: 2
+80-89: 3
+90-100: 1
