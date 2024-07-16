@@ -81,6 +81,27 @@ void writeStatisticsToFile(const vector<int>& grades, const string& filename) {
     }
     file << "Mode grade: " << mode << " (appears " << maxFreq << " times)\n";
 
+    // Calculate grade distribution
+    unordered_map<string, int> gradeDistribution;
+    for (int grade : grades) {
+        if (grade >= 0 && grade <= 59) {
+            gradeDistribution["0-59"]++;
+        } else if (grade >= 60 && grade <= 69) {
+            gradeDistribution["60-69"]++;
+        } else if (grade >= 70 && grade <= 79) {
+            gradeDistribution["70-79"]++;
+        } else if (grade >= 80 && grade <= 89) {
+            gradeDistribution["80-89"]++;
+        } else if (grade >= 90 && grade <= 100) {
+            gradeDistribution["90-100"]++;
+        }
+    }
+
+    file << "\nGrade Distribution:\n";
+    for (const auto& entry : gradeDistribution) {
+        file << entry.first << ": " << entry.second << "\n";
+    }
+
     file.close();
 }
 
@@ -93,7 +114,7 @@ int main() {
     // Calculate and write statistics to file
     writeStatisticsToFile(grades, "results.txt");
 
-    cout << "Student grade statistics have been calculated and saved to 'results.txt'.\n";
+    cout << "Student grade statistics including distribution have been calculated and saved to 'results.txt'.\n";
 
     return 0;
 }
