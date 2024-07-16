@@ -6,7 +6,7 @@
 
 using namespace std;
 
-// Function to input grades
+// Function to input grades with enhanced error handling
 void inputGrades(vector<int>& grades) {
     int grade;
 
@@ -23,7 +23,7 @@ void inputGrades(vector<int>& grades) {
         if (grade == -1)
             break;
 
-        if (grade < 0 || grade > 100) { // Example: valid grade range
+        if (grade < 0 || grade > 100) { // Validate grade range
             cout << "Invalid grade entered. Grade must be between 0 and 100.\n";
             continue;
         }
