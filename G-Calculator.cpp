@@ -1,41 +1,44 @@
 #include <iostream>
+#include <fstream>
 #include <vector>
-#include <limits>
 #include <algorithm>
 #include <unordered_map>
 
 using namespace std;
 
-// Function to input grades with enhanced error handling
-void inputGrades(vector<int>& grades) {
+// Function to input grades from a file
+void inputGradesFromFile(vector<int>& grades, const string& filename) {
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cout << "Failed to open file: " << filename << endl;
+        return;
+    }
+
     int grade;
-
-    cout << "Enter student grades (enter -1 to finish):\n";
-    
-    while (true) {
-        if (!(cin >> grade)) {
-            cout << "Invalid input. Please enter numeric grades only.\n";
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    while (file >> grade) {
+        if (grade < 0 || grade > 100) {
+            cout << "Invalid grade found in file: " << grade << ". Skipping.\n";
             continue;
         }
-
-        if (grade == -1)
-            break;
-
-        if (grade < 0 || grade > 100) { // Validate grade range
-            cout << "Invalid grade entered. Grade must be between 0 and 100.\n";
-            continue;
-        }
-
         grades.push_back(grade);
     }
+
+    file.close();
 }
 
-// Function to calculate statistics
-void calculateStatistics(const vector<int>& grades) {
+// Function to write statistics to a file
+void writeStatisticsToFile(const vector<int>& grades, const string& filename) {
+    ofstream file(filename);
+    if (!file.is_open()) {
+        cout << "Failed to create output file: " << filename << endl;
+        return;
+    }
+
+    file << "Student Grade Statistics:\n";
+
     if (grades.empty()) {
-        cout << "No grades entered. Exiting.\n";
+        file << "No grades entered.\n";
+        file.close();
         return;
     }
 
@@ -48,45 +51,26 @@ void calculateStatistics(const vector<int>& grades) {
     auto min_grade = *min_element(grades.begin(), grades.end());
     auto max_grade = *max_element(grades.begin(), grades.end());
 
-    cout << "Average grade: " << average << "\n";
-    cout << "Highest grade: " << max_grade << "\n";
-    cout << "Lowest grade: " << min_grade << "\n";
-}
+    file << "Average grade: " << average << "\n";
+    file << "Highest grade: " << max_grade << "\n";
+    file << "Lowest grade: " << min_grade << "\n";
 
-// Function to calculate median grade
-void calculateMedian(const vector<int>& grades) {
-    vector<int> sortedGrades = grades; // Copy grades to sort
-
+    // Calculate and write median grade
+    vector<int> sortedGrades = grades;
     sort(sortedGrades.begin(), sortedGrades.end());
-
     double median;
     if (sortedGrades.size() % 2 == 0) {
         median = (sortedGrades[sortedGrades.size() / 2 - 1] + sortedGrades[sortedGrades.size() / 2]) / 2.0;
     } else {
         median = sortedGrades[sortedGrades.size() / 2];
     }
+    file << "Median grade: " << median << "\n";
 
-    cout << "Median grade: " << median << "\n";
-}
-
-// Function to sort grades
-void sortGrades(vector<int>& grades) {
-    sort(grades.begin(), grades.end());
-
-    cout << "Sorted grades:\n";
-    for (int grade : grades) {
-        cout << grade << " ";
-    }
-    cout << "\n";
-}
-
-// Function to calculate mode
-void calculateMode(const vector<int>& grades) {
+    // Calculate and write mode grade
     unordered_map<int, int> frequency;
     for (int grade : grades) {
         frequency[grade]++;
     }
-
     int mode = -1;
     int maxFreq = 0;
     for (auto& entry : frequency) {
@@ -95,18 +79,21 @@ void calculateMode(const vector<int>& grades) {
             mode = entry.first;
         }
     }
+    file << "Mode grade: " << mode << " (appears " << maxFreq << " times)\n";
 
-    cout << "Mode grade: " << mode << " (appears " << maxFreq << " times)\n";
+    file.close();
 }
 
 int main() {
     vector<int> grades;
 
-    inputGrades(grades);
-    calculateStatistics(grades);
-    calculateMedian(grades);
-    sortGrades(grades);
-    calculateMode(grades);
+    // Input grades from file
+    inputGradesFromFile(grades, "grades.txt");
+
+    // Calculate and write statistics to file
+    writeStatisticsToFile(grades, "results.txt");
+
+    cout << "Student grade statistics have been calculated and saved to 'results.txt'.\n";
 
     return 0;
 }
